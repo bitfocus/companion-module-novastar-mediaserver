@@ -123,7 +123,6 @@ class ModuleInstance extends InstanceBase {
 				label: 'IP Address',
 				width: 6,
 				default: '192.168.0.10',
-				// default: '10.40.81.52',
 				regex: Regex.IP,
 			},
 			{
