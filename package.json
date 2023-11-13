@@ -11,7 +11,7 @@
 		"url": "git+https://github.com/bitfocus/companion-module-novastar-mediaserver"
 	},
 	"dependencies": {
-		"@companion-module/base": "~1.4.0"
+		"@companion-module/base": "~1.0.0"
 	},
 	"devDependencies": {
 		"@companion-module/tools": "^1.2.0"
