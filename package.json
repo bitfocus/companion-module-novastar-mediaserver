@@ -1,6 +1,6 @@
 {
 	"name": "novastar-media-server",
-	"version": "1.0.2",
+	"version": "1.1.0",
 	"main": "./src/main.js",
 	"scripts": {
 		"format": "prettier -w ."
@@ -11,10 +11,10 @@
 		"url": "git+https://github.com/bitfocus/companion-module-novastar-mediaserver"
 	},
 	"dependencies": {
-		"@companion-module/base": "~1.0.0"
+		"@companion-module/base": "~1.5.1"
 	},
 	"devDependencies": {
-		"@companion-module/tools": "^1.2.0"
+		"@companion-module/tools": "^1.4.1"
 	},
 	"prettier": "@companion-module/tools/.prettierrc.json"
 }
