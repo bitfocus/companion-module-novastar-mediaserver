@@ -1,32 +1,32 @@
 {
-	"id": "novastar-media-server",
-	"name": "novastar-media-server",
-	"shortname": "media-server",
-	"description": "Companion module for Novastar Media-Server Products",
-	"version": "1.1.0",
-	"license": "MIT",
-	"repository": "git+https://github.com/bitfocus/companion-module-novastar-mediaserver",
-	"bugs": "git+https://github.com/bitfocus/companion-module-novastar-mediaserver/issues",
-	"maintainers": [
-	  {
-		"name": "Q",
-		"email": "qiqi@novastar.tech"
-	  }
-	],
-	"runtime": {
-	  "type": "node18",
-	  "api": "nodejs-ipc",
-	  "apiVersion": "0.0.0",
-	  "entrypoint": "../src/main.js"
-	},
-	"legacyIds": [],
-	"manufacturer": "NovaStar",
-	"products": [
-	  "RX6"
-	],
-	"keywords": [
-	  "NovaStar",
-	  "Media-Server",
-	  "RX6"
-	]  
+  "id": "novastar-media-server",
+  "name": "novastar-media-server",
+  "shortname": "media-server",
+  "description": "诺瓦星云媒体服务器产品配套插件",
+  "version": "1.1.0",
+  "license": "MIT",
+  "repository": "git+https://github.com/bitfocus/companion-module-novastar-mediaserver",
+  "bugs": "git+https://github.com/bitfocus/companion-module-novastar-mediaserver/issues",
+  "maintainers": [
+    {
+      "name": "NovastarQQ",
+      "email": "qiqi@novastar.tech"
+    }
+  ],
+  "runtime": {
+    "type": "node18",
+    "api": "nodejs-ipc",
+    "apiVersion": "0.0.0",
+    "entrypoint": "../src/main.js"
+  },
+  "legacyIds": [],
+  "manufacturer": "诺瓦星云",
+  "products": [
+    "RX6"
+  ],
+  "keywords": [
+    "诺瓦星云",
+    "媒体服务器",
+    "RX6"
+  ]
 }

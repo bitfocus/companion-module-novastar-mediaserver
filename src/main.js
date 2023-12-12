@@ -6,160 +6,163 @@ const presets = require('./presets')
 
 const { getPrograms } = require('../utils/getPrograms')
 const { decodePrograms, decodeControlProtocol } = require('../utils/cmdCodec')
+const { PRODUCTS_INFO, PRODUCTS_INFORMATION } = require('../utils/constant')
 
 class ModuleInstance extends InstanceBase {
-	constructor(internal) {
-		super(internal)
+  constructor(internal) {
+    super(internal)
 
-		Object.assign(this, {
-			...actions,
-		})
+    Object.assign(this, {
+      ...actions,
+    })
 
-		this.PRODUCTS_INFO = {
-			rx6: { id: 'rx6', label: 'NovaStar RX6' },
-		}
-		this.PRODUCTS = Object.values(this.PRODUCTS_INFO)
-	}
-	
-	updateActions() {
-		this.setActionDefinitions(actions.getActions(this))
-	}
+    this.PRODUCTS_INFO = PRODUCTS_INFO
+    this.PRODUCTS = Object.values(this.PRODUCTS_INFO)
+  }
 
-	initUDP() {
-		if (this.udp) {
-			this.udp.destroy()
-			delete this.udp
-		}
+  updateActions() {
+    this.setActionDefinitions(actions.getActions(this))
+  }
 
-		if (this.config.host) {
-			this.udp = new UDPHelper(this.config.host, this.config.port ?? 18960, {bind_ip: this.config.host, bind_port: 18961})
+  initUDP() {
+    if (this.udp) {
+      this.udp.destroy()
+      delete this.udp
+    }
 
-			this.udp.on('error', (err) => {
-				this.log('error', 'Network error: ' + err.message)
-				this.updateStatus(InstanceStatus.ConnectionFailure, err.message)
-			})
+    if (this.config.host) {
+      this.udp = new UDPHelper(this.config.host, this.config.port ?? 18960, { bind_ip: this.config.host, bind_port: 18961 })
 
-			this.udp.on('listening', () => {
-				this.log('debug', 'UDP listening')
-				this.updateStatus(InstanceStatus.Ok)
-				getPrograms(this)
-			})
+      this.udp.on('error', (err) => {
+        this.log('error', 'Network error: ' + err.message)
+        this.updateStatus(InstanceStatus.ConnectionFailure, err.message)
+      })
 
-			// If we get data, thing should be good
-			this.udp.on('data', (msg) => {
-				this.log('debug', 'initUDP getData')
+      this.udp.on('listening', () => {
+        this.log('debug', 'UDP listening')
+        this.updateStatus(InstanceStatus.Ok)
+        getPrograms(this)
+      })
 
-				const res = decodeControlProtocol(msg)
+      // If we get data, thing should be good
+      this.udp.on('data', (msg) => {
+        this.log('debug', 'initUDP getData')
 
-				if(res.tag !== 129) {
-					console.log(`响应tag: ${res.tag}`)
-					this.log('debug', `响应tag: ${res.tag}`)	
-					return;
-				};
+        const res = decodeControlProtocol(msg)
 
-				const result = decodePrograms(res.data)
-				
-				console.log('~~~~~~~~~~~~~res', JSON.stringify(result))		
-				// this.status(this.STATE_WARNING, 'Connecting...')
-			})
+        if (res.tag !== 129) {
+          console.log(`响应tag: ${res.tag}`)
+          this.log('debug', `响应tag: ${res.tag}`)
+          return;
+        };
 
-			this.udp.on('status_change', (status, message) => {
-				this.updateStatus(status, message)
-				this.log('debug', 'UDP status_change: ' + status)
-			})
-			this.log('debug', 'initUDP finish')
-		} else {
-			this.log('error', 'No host configured')
-			this.updateStatus(InstanceStatus.BadConfig)
-		}
-	}
+        const result = decodePrograms(res.data)
 
-	async init(config) {
-		this.config = config
+        console.log('~~~~~~~~~~~~~res', JSON.stringify(result))
+        // this.status(this.STATE_WARNING, 'Connecting...')
+      })
 
-		if (this.config.modelID !== undefined) {
-			this.model = this.PRODUCTS[this.config.modelID]
-		} else {
-			this.config.modelID = 'rx6'
-			this.model = this.PRODUCTS['rx6']
-		}
+      this.udp.on('status_change', (status, message) => {
+        this.updateStatus(status, message)
+        this.log('debug', 'UDP status_change: ' + status)
+      })
+      this.log('debug', 'initUDP finish')
+    } else {
+      this.log('error', 'No host configured')
+      this.updateStatus(InstanceStatus.BadConfig)
+    }
+  }
 
-		// 当前节目列表及节目id
-		this.programList = [];	
-		this.programId = 0;	
+  async init(config) {
+    this.config = config
 
-		this.updateStatus(InstanceStatus.Connecting)
+    if (this.config.modelID !== undefined) {
+      this.model = this.PRODUCTS_INFO[this.config.modelID]
+    } else {
+      this.config.modelID = this.PRODUCTS[0]
+      this.model = this.PRODUCTS_INFO[this.config.modelID]
+    }
 
-		this.initUDP()
+    // 当前节目列表及节目id
+    this.programList = [];
+    this.programId = 0;
 
-		this.updateActions()
-		this.setPresetDefinitions(presets.getPresetDefinitions(this))
-	}
+    this.updateStatus(InstanceStatus.Connecting)
 
-	// When module gets deleted
-	async destroy() {
-		if (this.socket !== undefined) {
-			this.socket.destroy()
-		}
-		if (this.udp !== undefined) {
-			this.udp.destroy()
-		}
-		this.log('debug', 'destroy')
-	}
+    this.initUDP()
 
-	// Return config fields for web config
-	getConfigFields() {
-		return [
-			{
-				type: 'static-text',
-				id: 'info',
-				width: 12,
-				label: 'Information',
-				value: 'This module will allow you to control the following novastar media server products: RX6.',
-			},
-			{
-				type: 'textinput',
-				id: 'host',
-				label: 'IP Address',
-				width: 6,
-				default: '192.168.0.10',
-				regex: Regex.IP,
-			},
-			{
-				type: 'textinput',
-				id: 'port',
-				label: 'UDP Port',
-				width: 6,
-				default: '18960',
-				regex: Regex.PORT,
-			},
-			{
-				type: 'dropdown',
-				id: 'modelId',
-				label: 'Model',
-				width: 6,
-				choices: this.PRODUCTS,
-				default: this.PRODUCTS[0].id,
-			},
-		]
-	}
+    this.updateActions()
+    this.setPresetDefinitions(presets.getPresetDefinitions(this))
+  }
 
-	async configUpdated(config) {
-		let resetConnection = false
+  // When module gets deleted
+  async destroy() {
+    if (this.socket !== undefined) {
+      this.socket.destroy()
+    }
+    if (this.udp !== undefined) {
+      this.udp.destroy()
+    }
+    this.log('debug', 'destroy')
+  }
 
-		if (this.config.host != config.host) {
-			resetConnection = true
-		}
-		
-		this.log('info', 'configUpdated module....')
+  // Return config fields for web config
+  getConfigFields() {
+    return [
+      {
+        type: 'static-text',
+        id: 'info',
+        width: 12,
+        label: 'Information',
+        value: PRODUCTS_INFORMATION,
+      },
+      {
+        type: 'textinput',
+        id: 'host',
+        label: 'IP Address',
+        width: 6,
+        default: '192.168.0.10',
+        regex: Regex.IP,
+      },
+      {
+        type: 'textinput',
+        id: 'port',
+        label: 'UDP Port',
+        width: 6,
+        default: '18960',
+        regex: Regex.PORT,
+      },
+      {
+        type: 'dropdown',
+        id: 'modelId',
+        label: 'Model',
+        width: 6,
+        choices: this.PRODUCTS,
+        default: this.PRODUCTS[0].id,
+      },
+    ]
+  }
 
-		this.config = config
+  async configUpdated(config) {
+    let resetConnection = false
 
-		if (resetConnection === true || this.socket === undefined) {
-			this.updateStatus(InstanceStatus.Connecting)
-			this.initUDP()
-		}
-	}
+    if (this.config.host != config.host) {
+      resetConnection = true
+    }
+
+    this.log('info', 'configUpdated module....')
+
+    this.config = {
+      ...this.config,
+      ...config
+    }
+    this.model = this.PRODUCTS[config.modelID]
+
+    if (resetConnection === true || this.socket === undefined) {
+      this.updateStatus(InstanceStatus.Connecting)
+      this.initUDP()
+    }
+  }
 }
 
 runEntrypoint(ModuleInstance, UpgradeScripts)
