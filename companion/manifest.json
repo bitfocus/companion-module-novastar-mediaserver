@@ -2,7 +2,7 @@
   "id": "novastar-media-server",
   "name": "novastar-media-server",
   "shortname": "media-server",
-  "description": "诺瓦星云媒体服务器产品配套插件",
+  "description": "Companion module for the Nuowaxingyun Media-Server Products",
   "version": "1.1.0",
   "license": "MIT",
   "repository": "git+https://github.com/bitfocus/companion-module-novastar-mediaserver",
@@ -20,13 +20,13 @@
     "entrypoint": "../src/main.js"
   },
   "legacyIds": [],
-  "manufacturer": "诺瓦星云",
+  "manufacturer": "Nuowaxingyun",
   "products": [
     "RX6"
   ],
   "keywords": [
-    "诺瓦星云",
-    "媒体服务器",
+    "Nuowaxingyun",
+    "Media-Server",
     "RX6"
   ]
 }

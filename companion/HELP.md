@@ -1,13 +1,13 @@
-## 诺瓦星云-媒体服务器 配套插件
+## Nuowaxingyun
 
-该模块允许用户控制以下产品：RX6.
+This module will allow you to control the following Nuowaxingyun media server products: RX6.
 
-### 配置
+### Configuration
 
-- 在配置界面输入产品的IP地址及端口号
-- 产品将通过UDP进行通讯
+- Enter the IP address of the product in the configuration settings.
+- The device will use UDP communication.
 
-**支持的 Actions:**
+**Available actions:**
 
 - Program
 - Pause
