@@ -5,14 +5,18 @@ This module will allow you to control the following Nuowaxingyun media server pr
 ### Configuration
 
 - Enter the IP address of the product in the configuration settings.
-- The device will use UDP communication.
 
 **Available actions:**
 
 - Program
-- Pause
-- Play
-- Stop
-- FTB
-- Volume
-- PPT page up/down
+- Pause_program
+- Play_program
+- Open_ftb
+- Close_ftb
+- Open_volume
+- Close_volume
+- ppt_pgup
+- ppt_pgdn
+- Stop_program
+- Volume_up
+- Volume_down
