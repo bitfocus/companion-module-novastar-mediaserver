@@ -1,4 +1,3 @@
-
 const PRODUCTS_INFO = {
 	fx3pro: { id: 'fx3pro', label: 'Kompass FX3 Pro' },
 	rx6: { id: 'rx6', label: 'Kompass RX6' },
